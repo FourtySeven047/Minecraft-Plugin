@@ -1,0 +1,7 @@
+name: MinecraftPlugin
+version: 1.12.2
+main: main.minecraftplugin.MinecraftPlugin
+
+commands:
+  backpack:
+    aliases: [ bp ]

@@ -1,0 +1,6 @@
+main/minecraftplugin/backpack/BackpackManager.class
+main/minecraftplugin/backpack/Backpack.class
+main/minecraftplugin/BackpackCommand.class
+main/minecraftplugin/Base64.class
+main/minecraftplugin/MinecraftPlugin.class
+main/minecraftplugin/Config.class
