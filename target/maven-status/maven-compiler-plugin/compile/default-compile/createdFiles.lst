@@ -1,5 +1,7 @@
 main/minecraftplugin/backpack/BackpackManager.class
 main/minecraftplugin/backpack/Backpack.class
+main/minecraftplugin/listener/ClickInMenuListener.class
+main/minecraftplugin/listener/OpenMenuListener.class
 main/minecraftplugin/BackpackCommand.class
 main/minecraftplugin/Base64.class
 main/minecraftplugin/MinecraftPlugin.class
