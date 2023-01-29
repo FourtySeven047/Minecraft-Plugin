@@ -34,14 +34,19 @@ public class OpenMenuListener implements Listener {
                 this.inventory = Bukkit.createInventory(null, 27, "Lobby");
 
                 ItemStack compass = new ItemStack(Material.COMPASS);
+                ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
 
                 ItemMeta meta_compass = compass.getItemMeta();
+                ItemMeta meta_sword = sword.getItemMeta();
 
                 meta_compass.setDisplayName("Lobby");
+                meta_sword.setDisplayName("PVP Arena");
 
                 compass.setItemMeta(meta_compass);
+                sword.setItemMeta(meta_sword);
 
                 inventory.setItem(11, compass);
+                inventory.setItem(15, sword);
 
                 player.openInventory(inventory);
 
