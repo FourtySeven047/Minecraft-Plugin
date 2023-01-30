@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class StartPVP {
         PlayerInventory inventory = player.getInventory();
         Location location = new Location(player.getWorld(), -206, 67,124);
 
+        PotionEffect effect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 50);
+
         inventory.clear();
         inventory.setItem(8, compass);
         inventory.setItem(0, sword);
@@ -35,9 +39,10 @@ public class StartPVP {
         inventory.setHelmet(helmet);
 
         player.setGameMode(GameMode.SURVIVAL);
-
         player.setFoodLevel(20);
         player.setHealth(20);
+
+        player.addPotionEffect(effect);
 
         player.teleport(location);
     }

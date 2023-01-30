@@ -5,3 +5,9 @@ main: main.minecraftplugin.MinecraftPlugin
 commands:
   backpack:
     aliases: [ bp ]
+  points:
+    description: Get Kills of Player in the Arena
+    aliases: [ kills ]
+  createBankAccount:
+    description: Create new Bank Account
+    aliases: [ crbaccount ]
