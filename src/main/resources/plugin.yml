@@ -11,3 +11,6 @@ commands:
   createBankAccount:
     description: Create new Bank Account
     aliases: [ crbaccount ]
+  addMoney:
+    description: Add Money to Users Bank Account
+    aliases: []

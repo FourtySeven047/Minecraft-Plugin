@@ -8,9 +8,9 @@ public class MySQL {
 
     private String host = "localhost";
     private String port = "3306";
-    private String database = "arena";
-    private String username = "user";
-    private String password = "password";
+    private String database = "minecraft_server";
+    private String username = "root";
+    private String password = "";
 
     private Connection connection;
 

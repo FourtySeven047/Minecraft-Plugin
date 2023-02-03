@@ -10,6 +10,7 @@ import main.minecraftplugin.listener.AttackListener;
 import main.minecraftplugin.listener.ClickInMenuListener;
 import main.minecraftplugin.listener.OpenMenuListener;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,9 +22,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.*;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -38,6 +41,7 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
     public SQLGetter data;
     public ArenaPointsSQL arenaData;
     public MoneyManagement moneyData;
+    public ClickInMenuListener clickData;
     StartPVP startPVP = new StartPVP();
 
     @Override
@@ -51,14 +55,23 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
     public void onEnable() {
 
         // TODO:
-        //Implementieren eines Death Listeners, welcher einen, wenn man in der Arena ist, richtig teleportiert.
-        //Vielleicht noch nen Scoreboard oder so
-        //Ein Bus/Bahn System wäre auch gut im Portfolio
-        //Implementiere PVP Arena, welche über den Kompass Erreichbar ist.
-        //PVP nur in Arena. Attack Listener!
-        // Implementiere Join Listener! Möglicherweise Willkommensnachricht, vielmehr jedoch Zum Spawn Teleportieren.
-        //Geld System mit Bankautomaten und Bargeld und so
+        //Implementieren eines Death Listeners, welcher einen, wenn man in der Arena ist, richtig teleportiert. Gemacht!
+        //Vielleicht noch nen Scoreboard oder so. Ja, aber dafuer brauche ich viel Geduld.
+        //Ein Bus/Bahn System wäre auch gut im Portfolio.
+        //Geld System mit Bankautomaten und Bargeld und so. Geschafft!
         //Scoreboard oder Command to get wie viele Kills man hat in der Arena
+        //Vielleicht ein Trading System, mit welchem man items mit spielern sicher handeln kann.
+        //Rang System, welcher jedem Spieler einen  Rang zuweist. THIS IS NEXT!
+
+        // FEATURES:
+        //
+        //Lobby Kompass, mit welchem man sich zum Spawn Point, oder in die Kampfarena teleportieren kann.
+        //Geld System, mit welchem man Geld von seinem Konto einzahlen und abheben kann. über eine Bankkarte. Von dieser aus kann ich auch Geld von anderen Spielern abheben. Alle Daten diesbezüglich werden in einer SQL Datenbank geschrieben
+        //PIN System ist noch nicht implementiert. Man erstellt sich über /createbankaccount ein Konto. Passiert noch nicht automatisch. Bargeld "Account" wird jedoch beim ersten Joinen hinzugefügt.
+        // Außerdem besteht die Möglichkeit, anderen Spielern sein Bargeld zu geben.
+        //Es gibt eine Kampfarena, bei welcher man sich mit anderen Spielern in Sachen PVP messen kann. Die Anzahl der Kills, welche man bereits errungen hat, ist ueber /kills einsehbar. Daten werden in einer SQL Datenbank gespeichert.
+        //Zudem gibt es ein Backpack System. Der Backpack eines Spielers ist über /backpack oder kürzer /bp zu erreichen. Die Daten aller Spieler Backpacks werden in einem Textdokument im Base64 Format gespeichert. Nicht in einer MySQL Datenbank.
+        //Zudem gibt es einige Listener, welche zur Verwirklichung aller oben genannten Projekte verwendet bzw. geraucht wurden.
 
 
         //https://www.youtube.com/watch?v=AdFXiHC9ywM&t=1s
@@ -70,6 +83,7 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
         manager.registerEvents(this, this);
         getCommand("points").setExecutor(this);
         getCommand("createBankAccount").setExecutor(new MoneyManagement(this));
+        getCommand("addMoney").setExecutor(new MoneyManagement(this));
 
         getCommand("backpack").setExecutor(new BackpackCommand());
 
@@ -79,6 +93,7 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
         this.data = new SQLGetter(this);
         this.arenaData = new ArenaPointsSQL(this);
         this.moneyData = new MoneyManagement(this);
+        this.clickData = new ClickInMenuListener();
         try {
             SQL.connect();
         } catch (ClassNotFoundException | SQLException e) {
@@ -91,6 +106,7 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
             data.createTable();
             arenaData.createTable();
             moneyData.createTable();
+            moneyData.createCashTable();
             //this.getServer().getPluginManager().registerEvents(this, this);
         }
 
@@ -123,7 +139,17 @@ public final class MinecraftPlugin extends JavaPlugin implements CommandExecutor
         data.createPlayer(player);
         data.setArena(player.getUniqueId(), 0);
         arenaData.createPlayer(player);
-        startPVP.stopArenaOrOther(player.getUniqueId());
+        moneyData.createCashAccount(event.getPlayer());
+        //startPVP.stopArenaOrOther(player.getUniqueId());
+        //On Leave muss ich dann noch machen, oder?
+
+        MinecraftPlugin.getInstance().data.setArena(player.getUniqueId(), 0);
+
+        Location location = new Location(player.getWorld(), -229, 67, 103);
+
+        player.setGameMode(GameMode.CREATIVE);
+        player.teleport(location);
+
     }
 
     public int getArenaStatusPoints(UUID uuid){
